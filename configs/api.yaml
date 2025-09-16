@@ -1,5 +1,10 @@
 server:
   port: 8099
 
-mysql:
-  dsn: "root:YL123456@tcp(127.0.0.1:3306)/gorm?charset=utf8mb4&parseTime=True&loc=Local"
+
+database:
+  user: root
+  password: YL123456
+  name: gorm
+  host: 127.0.0.1
+  port: 3306
