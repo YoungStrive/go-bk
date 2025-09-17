@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/gin-gonic/gin"
 	"go-bk/internal/model"
+	"go-bk/internal/server"
 	"go-bk/pkg/response"
 	"net/http"
 )
@@ -15,5 +16,10 @@ func RegisterUser(c *gin.Context) {
 		response.Error(c, http.StatusBadRequest, 400, err.Error())
 		return
 	}
-
+	user, err := server.CreateUser(&userRegister)
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, 400, err.Error())
+		return
+	}
+	response.Success(c, user)
 }

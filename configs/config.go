@@ -6,22 +6,25 @@ import (
 	"log"
 )
 
-var Config struct {
-	ServerPort string `yaml:"server.port"`
-	DBUser     string `json:"database.user"`
-	DBPassword string `json:"database.password"`
-	DBName     string `json:"database.name"`
-	DBHost     string `json:"database.host"`
-	DBPort     string `json:"database.port"`
+type Config struct {
+	Server struct {
+		Port string `yaml:"port"`
+	} `yaml:"server"`
+	Database struct {
+		User     string `yaml:"user"`
+		Password string `yaml:"password"`
+		Name     string `yaml:"name"`
+		Host     string `yaml:"host"`
+		Port     string `yaml:"port"`
+	} `yaml:"database"`
 }
 
-func InitDB() *gorm.DB {
-	dsn := Config.DBUser + ":" + Config.DBPassword + "@tcp(" + Config.DBHost + ":" + Config.DBPort + ")/" + Config.DBName + "?charset=utf8mb4&parseTime=True&loc=Local"
+func InitDB(config *Config) *gorm.DB {
+	dsn := config.Database.User + ":" + config.Database.Password + "@tcp(" + config.Database.Host + ":" + config.Database.Port + ")/" + config.Database.Name + "?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatal("链接数据库出错了:", err.Error())
 	}
-
 	return db
 
 }
