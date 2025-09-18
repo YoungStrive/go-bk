@@ -1,8 +1,8 @@
 package model
 
 import (
+	"go-bk/utils"
 	"gorm.io/gorm"
-	"time"
 )
 
 type User struct {
@@ -10,8 +10,12 @@ type User struct {
 	Name     string
 	Email    string
 	Age      uint8
-	Birthday time.Time
+	Birthday utils.Date
 	Sex      uint8
 	Password string
 	gorm.Model
+}
+
+func (User) TableName() string {
+	return "user"
 }

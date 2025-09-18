@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"go-bk/internal/repositorie"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
@@ -25,6 +26,7 @@ func InitDB(config *Config) *gorm.DB {
 	if err != nil {
 		log.Fatal("链接数据库出错了:", err.Error())
 	}
+	repositorie.SetDB(db)
 	return db
 
 }

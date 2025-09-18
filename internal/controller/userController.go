@@ -23,3 +23,14 @@ func RegisterUser(c *gin.Context) {
 	}
 	response.Success(c, user)
 }
+
+// 获取所有的用户
+func ListUser(c *gin.Context) {
+	name := c.Query("name")
+	allUser, err := server.ListUserByName(name)
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, 400, err.Error())
+		return
+	}
+	response.Success(c, allUser)
+}

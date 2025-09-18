@@ -20,7 +20,13 @@ func CreateUser(user *model.RegisterUser) (*model.User, error) {
 		Email:    user.Email,
 		Password: utils.Md5Str(user.Password),
 		Birthday: user.Birthday,
+		Age:      user.Age,
 	}
 	repositorie.CreateUser(addUser)
 	return addUser, nil
+}
+
+// 根据用户名获取到用户列表
+func ListUserByName(name string) ([]map[string]interface{}, error) {
+	return repositorie.ListUserByName(name)
 }

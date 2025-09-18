@@ -32,5 +32,5 @@ func main() {
 	//注册路由
 	routes.RegisterRouter(r)
 	//启动服务
-	r.Run(config.Server.Port)
+	r.Run(":" + config.Server.Port)
 }
