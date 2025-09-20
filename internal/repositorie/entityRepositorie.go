@@ -27,11 +27,18 @@ func GetCountByUserName(name string) int64 {
 
 func ListUserByName(name string) ([]map[string]interface{}, error) {
 	var resultList []map[string]interface{}
-	user := model.User{}
+	user := &model.User{}
 	if name == "" {
-		DB.Debug().Model(&user).Select(user.ID, user.Name).Scan(&resultList)
+		DB.Debug().Model(user).Select("id", "name", "sex").Scan(&resultList)
 	} else {
-		DB.Debug().Model(&user).Select("id", "name").Where("name LIKE ? ", "%"+name+"%").Find(&resultList)
+		DB.Debug().Model(user).Select("id", "name", "sex").Where("name LIKE ? ", "%"+name+"%").Find(&resultList)
 	}
 	return resultList, nil
+}
+
+// 根据用户名获取用户信息
+func GetByUserName(name string) *model.User {
+	user := &model.User{}
+	DB.Debug().Model(user).Where(&model.User{Name: name}).First(user)
+	return user
 }

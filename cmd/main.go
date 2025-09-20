@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go-bk/configs"
 	"go-bk/internal/routes"
+	"go-bk/utils"
 	"gopkg.in/yaml.v3"
 	"gorm.io/gorm"
 	"log"
@@ -27,10 +28,14 @@ func main() {
 	}
 	//读取数据库配置
 	db = configs.InitDB(&config)
+
+	utils.InitJwtSecret(config.JWT.Secret)
+
 	//gin的默认值
 	r := gin.Default()
 	//注册路由
 	routes.RegisterRouter(r)
 	//启动服务
 	r.Run(":" + config.Server.Port)
+
 }

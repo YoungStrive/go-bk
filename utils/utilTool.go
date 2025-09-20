@@ -4,7 +4,9 @@ import (
 	"crypto/md5"
 	"database/sql/driver"
 	"encoding/hex"
+	"errors"
 	"fmt"
+	"github.com/golang-jwt/jwt/v5"
 	"time"
 )
 
@@ -12,6 +14,12 @@ const (
 	DateFormat = "2006-01-02"
 	TimeFormat = "2006-01-02 15:04:05"
 )
+
+var jwtSecret []byte
+
+func InitJwtSecret(secret string) {
+	jwtSecret = []byte(secret)
+}
 
 // 将str md5加密
 func Md5Str(str string) string {
@@ -22,7 +30,32 @@ func Md5Str(str string) string {
 
 }
 
+// 创建token  id 用户id name 用户名 expirSeconds 过期的秒数
+func CreateToke(id uint, name string, expirSeconds uint) (string, error) {
+	expirTime := time.Now().Add(time.Duration(expirSeconds) * time.Second)
+	claims := &Claims{
+		UserId: id,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expirTime),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			NotBefore: jwt.NewNumericDate(time.Now()),
+			Issuer:    "yl",
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	return token.SignedString(jwtSecret)
+
+}
+
 type Date time.Time
+
+// Claims 自定义的声明
+type Claims struct {
+	UserId   uint
+	UserName string
+	jwt.RegisteredClaims
+}
 
 func (d Date) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf(`"%s"`, time.Time(d).Format(DateFormat))), nil
@@ -84,4 +117,20 @@ func (t *DateTime) Scan(v interface{}) error {
 }
 func (t DateTime) String() string {
 	return time.Time(t).Format(TimeFormat)
+}
+
+// 解析token
+func ParseToken(tokenString string) (*Claims, error) {
+	claims := &Claims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims,
+		func(token *jwt.Token) (interface{}, error) {
+			return jwtSecret, nil
+		})
+	if err != nil {
+		return nil, err
+	}
+	if !token.Valid {
+		return nil, errors.New("invalid token")
+	}
+	return claims, nil
 }

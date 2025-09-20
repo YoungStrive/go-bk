@@ -18,6 +18,11 @@ type Config struct {
 		Host     string `yaml:"host"`
 		Port     string `yaml:"port"`
 	} `yaml:"database"`
+
+	JWT struct {
+		Secret     string `yaml:"secret"`
+		ExpireHour int    `yaml:"expireHour"`
+	} `yaml:"jwt"`
 }
 
 func InitDB(config *Config) *gorm.DB {

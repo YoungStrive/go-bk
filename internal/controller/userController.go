@@ -26,6 +26,11 @@ func RegisterUser(c *gin.Context) {
 
 // 获取所有的用户
 func ListUser(c *gin.Context) {
+	_, ok := c.Get("userId")
+	if !ok {
+		return
+	}
+
 	name := c.Query("name")
 	allUser, err := server.ListUserByName(name)
 	if err != nil {
@@ -33,4 +38,19 @@ func ListUser(c *gin.Context) {
 		return
 	}
 	response.Success(c, allUser)
+}
+
+// 用户登录
+func LoginUser(c *gin.Context) {
+	//用户名
+	name := c.PostForm("name")
+	//用户名密码
+	pwd := c.PostForm("pwd")
+
+	token, err := server.LoginUser(name, pwd)
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, 400, err.Error())
+		return
+	}
+	response.Success(c, token)
 }
