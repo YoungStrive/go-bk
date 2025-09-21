@@ -32,6 +32,17 @@ type Post struct {
 	IsComment bool
 	gorm.Model
 }
+type PostComment struct {
+	ID uint
+	//内容
+	Comment string
+	//文章id
+	PostId int
+
+	UserId uint
+
+	gorm.Model
+}
 
 func (User) TableName() string {
 	return "user"
@@ -40,6 +51,10 @@ func (User) TableName() string {
 // TableName TableName()方法返回数据库表名
 func (Post) TableName() string {
 	return "post"
+}
+
+func (PostComment) TableName() string {
+	return "post_comment"
 }
 
 // AfterCreate 钩子函数创建文章之后
@@ -51,6 +66,21 @@ func (p *Post) AfterCreate(tx *gorm.DB) (err error) {
 		fmt.Printf("postCount==%d", postCountNum)
 		postCountNum++
 		tx.Model(&User{}).Where(&User{ID: p.RefUserID}).Update("post_count", postCountNum)
+	}
+
+	return
+}
+
+// 钩子函数删除文章之后  更新用户发表的文章数
+func (p *Post) AfterDelete(tx *gorm.DB) (err error) {
+	usrId := p.RefUserID
+	var postCount int64
+	user := &User{ID: usrId}
+	tx.Debug().Model(&User{}).Select("post_count").
+		Where(user).Find(&postCount)
+	if postCount > 0 {
+		postCount--
+		tx.Model(&User{}).Where(&User{ID: usrId}).Update("post_count", postCount)
 	}
 
 	return

@@ -25,3 +25,10 @@ type UpdatePost struct {
 	Content string `form:"content" json:"content" binding:"required"`
 	ID      int    `form:"id" json:"id" binding:"required"`
 }
+
+// 添加文章评论的结构体
+type AddPostComment struct {
+	PostId  int    `form:"postId" json:"postId" binding:"required"`
+	Comment string `form:"comment" json:"comment" binding:"required"`
+	UserId  uint
+}

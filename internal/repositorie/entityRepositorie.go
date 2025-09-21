@@ -93,3 +93,21 @@ func UpdatePost(post *model.Post) {
 func DeletePost(post *model.Post) {
 	DB.Debug().Delete(post)
 }
+
+func AddPostComment(postComment *model.PostComment) error {
+	if err := DB.Debug().Create(postComment).Error; err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func ListPostComment(postId string) ([]map[string]interface{}, error) {
+	var results []map[string]interface{}
+
+	DB.Debug().Table("post_comment p").
+		Select("p.id", "p.comment,user.name").
+		Joins("LEFT JOIN user ON user.id = p.user_id").
+		Where("post_id=?", postId).Scan(&results)
+	return results, nil
+}

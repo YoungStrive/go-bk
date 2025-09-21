@@ -93,3 +93,34 @@ func DeletePost(c *gin.Context) {
 	response.Success(c, "删除成功")
 
 }
+
+func AddComment(c *gin.Context) {
+	//获取用户id 需要登录
+	userId, ok := c.Get("userId")
+	if !ok {
+		return
+	}
+	post := &model.AddPostComment{}
+	//参数不对
+	if err := c.ShouldBind(post); err != nil {
+		response.Error(c, http.StatusBadRequest, 400, err.Error())
+		return
+	}
+	post.UserId = userId.(uint)
+	err := server.AddPostComment(post)
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, 400, err.Error())
+		return
+	}
+	response.Success(c, "评论文章成功")
+}
+
+func ListComment(c *gin.Context) {
+	postId := c.Query("postId")
+	allComment, err := server.ListPostComment(postId)
+	if err != nil {
+		response.Error(c, http.StatusInternalServerError, 400, err.Error())
+		return
+	}
+	response.Success(c, allComment)
+}

@@ -19,5 +19,8 @@ func RegisterRouter(r *gin.Engine) {
 	postRouters.GET("/list", middlewares.AuthMiddleware(), controller.ListPost)
 	postRouters.GET("/getPost", middlewares.AuthMiddleware(), controller.GetPost)
 	postRouters.DELETE("/del", middlewares.AuthMiddleware(), controller.DeletePost)
+	postRouters.POST("/addPostComment", middlewares.AuthMiddleware(), controller.AddComment)
+
+	postRouters.GET("/listPostComment", middlewares.AuthMiddleware(), controller.ListComment)
 
 }

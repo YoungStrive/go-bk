@@ -58,3 +58,27 @@ func DeletePost(userId uint, postId string) error {
 	repositorie.DeletePost(postEntity)
 	return nil
 }
+
+// 添加文章评论
+func AddPostComment(post *model.AddPostComment) error {
+	postId := post.PostId
+	postEntity := repositorie.GetPostById(postId)
+	if postEntity.ID == 0 {
+		return errors.New("文章不存在")
+	}
+	comment := model.PostComment{
+		Comment: post.Comment,
+		PostId:  postId,
+		UserId:  post.UserId,
+	}
+	return repositorie.AddPostComment(&comment)
+}
+
+func ListPostComment(postId string) ([]map[string]interface{}, error) {
+	commentList, err := repositorie.ListPostComment(postId)
+	if err != nil {
+		return commentList, nil
+	}
+	return commentList, err
+
+}
