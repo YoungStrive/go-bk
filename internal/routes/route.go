@@ -13,4 +13,11 @@ func RegisterRouter(r *gin.Engine) {
 	userRouters.POST("/login", controller.LoginUser)
 	userRouters.GET("/listUser", middlewares.AuthMiddleware(), controller.ListUser)
 
+	postRouters := r.Group("/post")
+	postRouters.POST("/add", middlewares.AuthMiddleware(), controller.AddPost)
+	postRouters.PUT("/update", middlewares.AuthMiddleware(), controller.UpdatePost)
+	postRouters.GET("/list", middlewares.AuthMiddleware(), controller.ListPost)
+	postRouters.GET("/getPost", middlewares.AuthMiddleware(), controller.GetPost)
+	postRouters.DELETE("/del", middlewares.AuthMiddleware(), controller.DeletePost)
+
 }

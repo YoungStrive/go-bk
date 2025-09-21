@@ -62,7 +62,7 @@ func LoginUser(name string, pwd string) (string, error) {
 		return "", fmt.Errorf("密码错误")
 	}
 
-	tokerStr, err := utils.CreateToke(user.ID, user.Name, 60*2)
+	tokerStr, err := utils.CreateToke(user.ID, user.Name, 60*60*24)
 	return tokerStr, err
 
 }
